@@ -1,0 +1,71 @@
+[project]
+name = "pepbench_annotation"
+version = "0.1.0"
+description = "MaD-GUI extension to manually annotate data for the pepbench project."
+authors = [{ name = "Robert Richer", email = "robert.richer@fau.de" }]
+requires-python = ">=3.10,<3.12"
+readme = "README.md"
+license = "MIT"
+
+dependencies = [
+    "mad-gui",
+    "pepbench",
+]
+
+[tool.uv]
+override-dependencies = [
+    "PySide6 >= 6.9.0"
+]
+
+
+[tool.uv.sources]
+mad-gui = { git = "https://github.com/mad-lab-fau/mad-gui.git", branch = "pyside-6" }
+pepbench = { git = "https://github.com/empkins/pepbench.git" }
+
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | docs
+    | build
+    | dist
+    | \.virtual_documents
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 120
+skip_gitignore = true
+
+[tool.poe.tasks]
+_format = "ruff format ."
+_auto_fix = "ruff check . --fix-only --show-fixes --exit-zero"
+_auto_fix_unsafe = "ruff check . --fix-only --show-fixes --exit-zero --unsafe-fixes"
+format = ["_auto_fix", "_format"]
+format_unsafe = ["_auto_fix_unsafe", "_format"]
+lint = { cmd = "ruff check src/pepbench_annotation --fix", help = "Lint all files with ruff." }
+_lint_ci = "ruff check src/pepbench_annotation --output-format=github"
+_check_format = "ruff format . --check"
+ci_check = { sequence = ["_check_format", "_lint_ci"], help = "Check all potential format and linting issues." }
+test = { cmd = "pytest --cov=src --cov-report=term-missing --cov-report=xml", help = "Run Pytest with coverage." }
+docs = { "script" = "_tasks:task_docs()",  help = "Build the html docs using Sphinx." }
+docs_clean = { "script" = "_tasks:task_docs(clean=True)",  help = "Remove all old build files and build a clean version of the docs." }
+docs_preview = { cmd = "python -m http.server --directory docs/_build/html", help = "Preview the built html docs." }
+version = { script = "_tasks:task_update_version()" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
