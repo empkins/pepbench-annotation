@@ -77,7 +77,7 @@ def generate_labeling_borders(
 
         folder_path = base_path.joinpath(f"{'/'.join(list(subset.group_labels[0]))}")
         folder_path.mkdir(parents=True, exist_ok=True)
-        file_path = folder_path.joinpath(f"labeling_borders_{'_'.join(list(subset.group_labels[0]))}.csv")
+        file_path = folder_path.joinpath(f"{'_'.join(list(subset.group_labels[0]))}_labeling_borders.csv")
         # label_borders_df.to_csv(file_path, index=False)
 
         print(label_borders_df)

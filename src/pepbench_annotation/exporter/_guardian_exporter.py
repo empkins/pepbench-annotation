@@ -68,7 +68,9 @@ class GuardianExporter(BaseExporter):
                     data_filtered = data_converted.query(f"channel in {channel_combined}").copy()
 
                     data_filtered.to_csv(
-                        Path(directory).joinpath(f"{name_list[number].replace(' ', '_')}_{channel}.csv"),
+                        Path(directory).joinpath(
+                            f"{name_list[number].replace(' ', '_')}_{channel}_reference_labels.csv"
+                        ),
                         index=False,
                     )
 
