@@ -1,24 +1,17 @@
 import json
 from pathlib import Path
 
-
 import pandas as pd
-
-
-from pepbench.datasets import GuardianDataset
-
-from pepbench.algorithms.heartbeat_segmentation import HeartbeatSegmentationNeurokit
-
+from biopsykit.signals.ecg.preprocessing import EcgPreprocessingNeurokit
+from biopsykit.signals.icg.preprocessing import IcgPreprocessingBandpass
 from mad_gui.components.dialogs import UserInformation
 from mad_gui.plugins.base import BaseDataImporter, SensorDataDict
-from typing import Dict, List
-
-from biopsykit.signals.icg.preprocessing import IcgPreprocessingBandpass
-from biopsykit.signals.ecg.preprocessing import EcgPreprocessingNeurokit
+from pepbench.algorithms.heartbeat_segmentation import HeartbeatSegmentationNeurokit
+from pepbench.datasets import GuardianDataset
 
 
 class GuardianImporter(BaseDataImporter):
-    def load_sensor_data(self, index: str) -> Dict[str, SensorDataDict]:
+    def load_sensor_data(self, index: str) -> dict[str, SensorDataDict]:
         # load ecg and icg data
         # load ecg data
         base_path = self._get_dataset_path("guardian")
@@ -52,22 +45,22 @@ class GuardianImporter(BaseDataImporter):
     def get_name(self) -> str:
         return "Guardian Importer"
 
-    def get_selectable_data(self) -> List[str]:
+    def get_selectable_data(self) -> list[str]:
         # get list of every participant and phase
         base_path = self._get_dataset_path("guardian")
         # get list of every participant and phase
         dataset = GuardianDataset(base_path)
-        list = []
+        selectable_data = []
         for i in dataset:
             participant = i.index["participant"][0]
             phase = i.index["phase"][0]
-            list.append(f"{participant} {phase}")
+            selectable_data.append(f"{participant} {phase}")
 
-        return list
+        return selectable_data
 
-    def load_annotations(self, index: int) -> Dict[str, pd.DataFrame]:
+    def load_annotations(self, index: int) -> dict[str, pd.DataFrame]:
         # load borders of random selected part of the data for manually labeling
-        annotations_dict = dict()
+        annotations_dict = {}
         annotations_dict[f" Dataset {index}"] = {"ICG_ECG_Labels": pd.DataFrame(columns=["pos", "description"])}
         base_path = self._get_dataset_path("guardian")
         dataset = GuardianDataset(base_path, only_labeled=True)
@@ -88,7 +81,7 @@ class GuardianImporter(BaseDataImporter):
         heartbeat_algo.extract(ecg=ecg_clean, sampling_rate_hz=fs_ecg)
         heartbeats = heartbeat_algo.heartbeat_list_
 
-        sample_offset_absolute = subset.labeling_borders["sample_relative"].values[0]
+        sample_offset_absolute = subset.labeling_borders["sample_relative"].to_numpy()[0]
 
         heartbeat_label_list = []
         for idx, row in heartbeats.iterrows():

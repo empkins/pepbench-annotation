@@ -1,12 +1,11 @@
 import ast
+from pathlib import Path
+from typing import Self
 
 import pandas as pd
-
-
 from mad_gui import BaseExporter
 from mad_gui.components.dialogs import UserInformation
 from mad_gui.models import GlobalData
-from pathlib import Path
 from PySide6.QtWidgets import QFileDialog
 
 from pepbench_annotation.importer import EmpkinsImporter
@@ -20,13 +19,13 @@ class EmpkinsExporter(BaseExporter):
     }
 
     @classmethod
-    def get_name(cls) -> str:
+    def get_name(cls: Self) -> str:
         # This will be shown as string in the dropdown menu of
         # mad_gui.components.dialogs.ExportResultsDialog upon pressing
         # the button "Export data" in the GUI
         return "EmpkinS Exporter"
 
-    def process_data(self, global_data: GlobalData):
+    def process_data(self, global_data: GlobalData) -> None:
         # This function is called when the user presses the "Export data" button
 
         directory = QFileDialog().getExistingDirectory(
@@ -35,7 +34,7 @@ class EmpkinsExporter(BaseExporter):
         name_list = EmpkinsImporter.get_selectable_data(EmpkinsImporter)
 
         for plot_name, plot_data in global_data.plot_data.items():
-            for label_name, annotations in plot_data.annotations.items():
+            for _label_name, annotations in plot_data.annotations.items():
                 if len(annotations.data) == 0:
                     continue
                 # format the dataframe to be able to reload the annotations afterwards
@@ -74,12 +73,11 @@ class EmpkinsExporter(BaseExporter):
                         index=False,
                     )
 
-    def split_tuple(self, value):
+        UserInformation.inform(f"The results were saved to {directory}.")
+
+    def split_tuple(self, value: str) -> tuple:
         parsed = ast.literal_eval(str(value))  # Convert string to tuple
         # parsed = value
         if len(parsed) == 1:
             return self.TUPLE_MAPPING[parsed[0]]
-        else:
-            return ("heartbeat", *parsed)
-
-        UserInformation.inform(f"The results were saved to {directory}.")
+        return ("heartbeat", *parsed)

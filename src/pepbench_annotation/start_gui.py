@@ -1,28 +1,26 @@
+"""Start the GUI."""
+
 import argparse
 import sys
+from collections.abc import Sequence
 from pathlib import Path
+from typing import Optional
 
 import pyqtgraph
-from PySide6.QtWidgets import QApplication
-
 from mad_gui.config import BaseSettings, BaseTheme
 from mad_gui.plot_tools.labels import BaseEventLabel, BaseRegionLabel
 from mad_gui.plugins.base import BasePlugin
 from mad_gui.plugins.example import ActivityLabel, Stride
-
-from pepbench_annotation.exporter import GuardianExporter
-from pepbench_annotation.exporter import EmpkinsExporter
-from pepbench_annotation.importer import GuardianImporter
-from pepbench_annotation.importer import EmpkinsImporter
-
-from pepbench_annotation.labels import ICGECGLabels
-
 from mad_gui.windows import MainWindow
-from typing import Optional, Sequence, Type
+from PySide6.QtWidgets import QApplication
+
+from pepbench_annotation.exporter import EmpkinsExporter, GuardianExporter
+from pepbench_annotation.importer import EmpkinsImporter, GuardianImporter
+from pepbench_annotation.labels import ICGECGLabels
 
 
 def start_gui(
-    data_dir=Path("."),
+    data_dir: Path = Path(),
     plugins: Optional[Sequence[BasePlugin]] = (
         # ExampleFileImporter("Example File Importer 1"),
         # ExampleFileImporter("Example File Importer 2"),
@@ -36,10 +34,10 @@ def start_gui(
         Stride,
     ),
     events: Optional[Sequence[BaseEventLabel]] = (ICGECGLabels,),
-    settings: Optional[Type[BaseSettings]] = BaseSettings,
-    theme: Optional[Type[BaseTheme]] = BaseTheme,
+    settings: Optional[type[BaseSettings]] = BaseSettings,
+    theme: Optional[type[BaseTheme]] = BaseTheme,
     use_opengl: bool = True,
-):
+) -> None:
     """Use this function to start the GUI and pass your plugins, like importers and algorithms to it.
 
     Please look at the `See Also` section below, to learn more about how to create objects of the classes you can

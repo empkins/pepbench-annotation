@@ -110,6 +110,8 @@ ignore = [
     "A003",
     # Ignore because of formatting
     "ISC001",
+    # Mutable class attribute should be annotated with ClassVar
+    "RUF012"
 ]
 
 

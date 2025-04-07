@@ -1,15 +1,15 @@
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 from biopsykit.signals.ecg.segmentation import HeartbeatSegmentationNeurokit
 from pepbench.datasets import BasePepDataset
-from pepbench.utils._types import path_t
 
 
 def generate_labeling_borders(
-    dataset: BasePepDataset, phase_durations: dict[str, int], base_output_path: Optional[path_t] = None
-):
+    dataset: BasePepDataset,
+    phase_durations: dict[str, int],
+    random_seed: int = 0,
+) -> dict[tuple[str, ...], pd.DataFrame]:
+    return_dict = {}
     group_levels = list(dataset.index.columns)
     for subset in dataset.groupby(group_levels[:-1]):
         label_borders = []
@@ -38,8 +38,9 @@ def generate_labeling_borders(
             # get the closest heartbeat_id index to the max_start_val
             max_idx = heartbeats_second.sub(max_start_val).abs().idxmin()
 
+            rng = np.random.default_rng(seed=random_seed)
             # randomly select a start index between min_idx and max_idx
-            start_idx = min_idx + int((max_idx - min_idx) * np.random.rand())
+            start_idx = min_idx + int((max_idx - min_idx) * rng.random())
             start_idx = heartbeats["start_sample"].iloc[start_idx]
             end_idx = start_idx + duration_subset * subset_phase.sampling_rate_ecg
 
@@ -68,16 +69,6 @@ def generate_labeling_borders(
             label_borders.append(df_labeling_borders_end)
 
         label_borders_df = pd.concat(label_borders, ignore_index=True)
-        base_path = base_output_path
-        if hasattr(dataset, "base_path"):
-            base_path = dataset.base_path
+        return_dict[tuple(subset.group_labels[0])] = label_borders_df
 
-        if base_path is None:
-            raise ValueError("No output path provided.")
-
-        folder_path = base_path.joinpath(f"{'/'.join(list(subset.group_labels[0]))}")
-        folder_path.mkdir(parents=True, exist_ok=True)
-        file_path = folder_path.joinpath(f"{'_'.join(list(subset.group_labels[0]))}_labeling_borders.csv")
-        # label_borders_df.to_csv(file_path, index=False)
-
-        print(label_borders_df)
+    return return_dict

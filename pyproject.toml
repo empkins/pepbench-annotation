@@ -12,6 +12,15 @@ dependencies = [
     "pepbench",
 ]
 
+[dependency-groups]
+dev = [
+    "black>=24.8.0,<25",
+    "ruff>=0.6.3,<0.7",
+    "pytest>=8.3.4,<9",
+    "numpydoc>=1.8.0,<2",
+    "poethepoet>=0.33.0",
+]
+
 [tool.uv]
 override-dependencies = [
     "PySide6 >= 6.9.0"
