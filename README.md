@@ -56,7 +56,8 @@ hold the `Ctrl` key (on Windows) or `Cmd` key (on Mac) while clicking into the p
 annotation. Afterwards, you can select the annotation type (ECG Q-peak, ICG, B-point, or Artefact) from the popup menu.
 
 If you are done annotating with one datapoint, you can save the annotations by clicking on "Export Data" and 
-selecting the correct exporter for the dataset you are using ("EmpkinS Exporter" or "Guardian Exporter").
+selecting the correct exporter for the dataset you are using ("EmpkinS Exporter" or "Guardian Exporter"). The 
+annotations will be saved as csv files in the respective subfolders (automatically selected by the GUI).
 
 Other useful commands:
 * `Q` - Move the plot to the left (by 2/3 of the screen)
