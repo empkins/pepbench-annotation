@@ -1,6 +1,3 @@
-import json
-from pathlib import Path
-
 import pandas as pd
 from biopsykit.signals.ecg.preprocessing import EcgPreprocessingNeurokit
 from biopsykit.signals.icg.preprocessing import IcgPreprocessingBandpass
