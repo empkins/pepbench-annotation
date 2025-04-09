@@ -1,21 +1,12 @@
 """Example script to generate random subsets for manual labeling."""
 
-import json
-from pathlib import Path
-
 from pepbench.datasets import EmpkinsDataset
 
-from pepbench_annotation.utils import generate_labeling_borders
-
-
-def _get_dataset_path(dataset_type: str) -> Path:
-    config_path = Path("../../config/config.json")
-    config_dict = json.load(config_path.open("r"))
-    return Path(config_dict[dataset_type])
-
+from pepbench_annotation.helpers import generate_labeling_borders
+from pepbench_annotation.utils import get_dataset_path
 
 if __name__ == "__main__":
-    dataset_path = _get_dataset_path("empkins")
+    dataset_path = get_dataset_path("empkins")
     dataset = EmpkinsDataset(dataset_path)
 
     dict_labeling_borders = generate_labeling_borders(

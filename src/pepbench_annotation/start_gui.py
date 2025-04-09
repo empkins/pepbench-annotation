@@ -24,10 +24,10 @@ def start_gui(
     plugins: Optional[Sequence[BasePlugin]] = (
         # ExampleFileImporter("Example File Importer 1"),
         # ExampleFileImporter("Example File Importer 2"),
-        GuardianImporter(),
         EmpkinsImporter(),
-        GuardianExporter(),
+        GuardianImporter(),
         EmpkinsExporter(),
+        GuardianExporter(),
     ),
     labels: Optional[Sequence[BaseRegionLabel]] = (
         ActivityLabel,

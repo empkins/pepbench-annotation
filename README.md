@@ -40,18 +40,23 @@ uv sync --all-extras --dev
 
 ## Usage
 
-All you need to do is start the GUI from the `start_gui.py` file. Afterwards, select the 
-dataset you want to annotate (EmpkinS or Guardian) and select the first datapoint.
+All you need to do is start the GUI from the `start_gui.py` file. Afterwards, click on "Load from Plugin" and select the 
+importer plugin for the dataset you want to annotate ("EmpkinS Importer" or "Guardian Importer"). The first available 
+datapoint for annotation is then automatically selected. 
 
-This will load the raw data (ECG and ICG) and display it in the GUI in one joint plot.
-You can then use the GUI to annotate the data.
+This will load the raw data (ECG and ICG) and display it in the GUI in one joint plot. You can then use the GUI to 
+annotate the data. To zoom in on the data, you can use the mouse wheel or trackpad. To only zoom in on one axis
+(x or y, respectively), and keep the other axis fixed, hover over the axis you want to zoom in on and then zoom in 
+using the mouse wheel or trackpad. It is very recommended to zoom in on the data for proper annotation, and to have a 
+maximum of 5-6 heartbeats being displayed at once.
 
-Annotations can be set by pressing the `A` key to switch from annotating *regions* (the default in the MaD-GUI, 
-not needed here) to annotating single *events*. Afterwards, click in the plot to set the annotation and select the
-type of annotation (ECG Q-peak, ICG, B-point, or Artefact) in the dropdown menu.
+Annotations can be set by pressing the `A` key (or by clicking on the "Add Annotation" button in the GUI). By default,
+the MaD-GUI is set to annotate *regions* with start and end borders (not needed here). To only annotate *single events*,
+hold the `Ctrl` key (on Windows) or `Cmd` key (on Mac) while clicking into the plot where you want to set the 
+annotation. Afterwards, you can select the annotation type (ECG Q-peak, ICG, B-point, or Artefact) from the popup menu.
 
-If you are done annotating, you can save the annotations by clicking on "Export" and selecting the correct 
-exporter for the dataset you are using (EmpkinS or Guardian).
+If you are done annotating with one datapoint, you can save the annotations by clicking on "Export Data" and 
+selecting the correct exporter for the dataset you are using ("EmpkinS Exporter" or "Guardian Exporter").
 
 Other useful commands:
 * `Q` - Move the plot to the left (by 2/3 of the screen)

@@ -9,6 +9,7 @@ from mad_gui.models import GlobalData
 from PySide6.QtWidgets import QFileDialog
 
 from pepbench_annotation.importer import EmpkinsImporter
+from pepbench_annotation.utils import get_dataset_path
 
 
 class EmpkinsExporter(BaseExporter):
@@ -28,10 +29,10 @@ class EmpkinsExporter(BaseExporter):
     def process_data(self, global_data: GlobalData) -> None:
         # This function is called when the user presses the "Export data" button
 
-        directory = QFileDialog().getExistingDirectory(
-            None, "Save .csv results to this folder", str(Path(global_data.data_file).parent)
-        )
         name_list = EmpkinsImporter.get_selectable_data(EmpkinsImporter)
+
+        # will be set in the loop
+        directory = None
 
         for plot_name, plot_data in global_data.plot_data.items():
             for _label_name, annotations in plot_data.annotations.items():
@@ -61,15 +62,24 @@ class EmpkinsExporter(BaseExporter):
                     {"heartbeat_id": int, "sample_relative": int, "sample_absolute": int}
                 )
 
+                datapoint_info = name_list[number].split(" ")
+                datapoint_info = [d.lower() for d in datapoint_info]
+                base_path = get_dataset_path("empkins")
+                # TODO remove rater_02 later
+                folder_path = base_path.joinpath(
+                    f"data_per_subject/{datapoint_info[0]}/{datapoint_info[1]}/biopac/reference_labels/rater_02"
+                )
+                directory = QFileDialog().getExistingDirectory(
+                    None, "Save .csv results to this folder", str(folder_path)
+                )
+
                 for channel in ["ICG", "ECG"]:
                     # filter channel and "heartbeat" from "channel" column
                     channel_combined = ["heartbeat", channel, "Artefact"]
                     data_filtered = data_converted.query(f"channel in {channel_combined}").copy()
 
                     data_filtered.to_csv(
-                        Path(directory).joinpath(
-                            f"{name_list[number].replace(' ', '_')}_{channel}_reference_labels.csv"
-                        ),
+                        Path(directory).joinpath(f"reference_labels_{'_'.join(datapoint_info)}_{channel.lower()}.csv"),
                         index=False,
                     )
 

@@ -1,6 +1,3 @@
-import json
-from pathlib import Path
-
 import pandas as pd
 from biopsykit.signals.ecg.preprocessing import EcgPreprocessingNeurokit
 from biopsykit.signals.icg.preprocessing import IcgPreprocessingBandpass
@@ -9,12 +6,14 @@ from mad_gui.plugins.base import BaseDataImporter, SensorDataDict
 from pepbench.algorithms.heartbeat_segmentation import HeartbeatSegmentationNeurokit
 from pepbench.datasets import GuardianDataset
 
+from pepbench_annotation.utils import get_dataset_path
+
 
 class GuardianImporter(BaseDataImporter):
     def load_sensor_data(self, index: str) -> dict[str, SensorDataDict]:
         # load ecg and icg data
         # load ecg data
-        base_path = self._get_dataset_path("guardian")
+        base_path = get_dataset_path("guardian")
         dataset = GuardianDataset(base_path, only_labeled=True)
         subset = dataset.get_subset(
             participant=dataset.index.iloc[index]["participant"], phase=dataset.index.iloc[index]["phase"]
@@ -47,7 +46,7 @@ class GuardianImporter(BaseDataImporter):
 
     def get_selectable_data(self) -> list[str]:
         # get list of every participant and phase
-        base_path = self._get_dataset_path("guardian")
+        base_path = get_dataset_path("guardian")
         # get list of every participant and phase
         dataset = GuardianDataset(base_path)
         selectable_data = []
@@ -62,7 +61,7 @@ class GuardianImporter(BaseDataImporter):
         # load borders of random selected part of the data for manually labeling
         annotations_dict = {}
         annotations_dict[f" Dataset {index}"] = {"ICG_ECG_Labels": pd.DataFrame(columns=["pos", "description"])}
-        base_path = self._get_dataset_path("guardian")
+        base_path = get_dataset_path("guardian")
         dataset = GuardianDataset(base_path, only_labeled=True)
 
         subset = dataset.get_subset(
@@ -108,9 +107,3 @@ class GuardianImporter(BaseDataImporter):
         annotations_dict[f" Dataset {index}"]["ICG_ECG_Labels"] = annotations_df
 
         return annotations_dict
-
-    @staticmethod
-    def _get_dataset_path(dataset_type: str) -> Path:
-        config_path = Path("../../config/config.json")
-        config_dict = json.load(config_path.open("r"))
-        return Path(config_dict[dataset_type])

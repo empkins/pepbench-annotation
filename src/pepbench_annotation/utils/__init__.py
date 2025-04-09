@@ -1,5 +1,5 @@
 """Util functions for the pepbench_annotation package."""
 
-from pepbench_annotation.utils._labeling_border_generation import generate_labeling_borders
+from pepbench_annotation.utils._utils import get_dataset_path
 
-__all__ = ["generate_labeling_borders"]
+__all__ = ["get_dataset_path"]
